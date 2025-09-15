@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[oc]
+*.egg-info
+
+# Virtual envs
+.venv/
+venv/
+
+# IDE
+.idea/
+.vscode/
+
+# Env files
+.env
+.env.*
+!.env.example
+
+# Data
+/data/
+chroma/
