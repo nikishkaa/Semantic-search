@@ -34,6 +34,8 @@ services:
       - chroma
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    volumes:
+      - ./fixtures:/app/fixtures:ro
 
   chroma:
     image: chromadb/chroma:latest
@@ -50,26 +52,6 @@ services:
       - CHROMA_SERVER_HTTP_PORT=$CHROMADB_PORT
       - IS_PERSISTENT=TRUE
       - PERSIST_DIRECTORY=/chroma/chroma
-
-
-  #  ollama:
-  #    image: ollama/ollama:latest
-  #    container_name: ollama
-  #    env_file:
-  #      - ".env"
-  #    ports:
-  #      - "11434:11434"
-  #    volumes:
-  #      - ollama:/root/.ollama
-  #    tty: true
-  #    restart: always
-  #    entrypoint: sh -c "
-  #      ollama serve &
-  #      sleep 5;
-  #      ollama pull $LANGGRAPH_EMBEDDING_MODEL;
-  #      ollama pull $LANGGRAPH_LANGUAGE_MODEL;
-  #      wait
-  #      "
 volumes:
   backend-data:
   chroma-data:

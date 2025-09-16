@@ -10,8 +10,11 @@ from src.bot.bot import BotSingleton
 from src.core.domain.document_service import DocumentService
 from src.core.domain.chat import ask
 
-router = Router()
+from datetime import date
+from src.config import SettingsSingleton
 
+router = Router()
+settings = SettingsSingleton.get_instance()
 
 @router.message(F.text, Command('start'))
 async def start(message: types.Message):
@@ -52,8 +55,24 @@ async def upload_document(message: types.Message):
     bot: Bot = BotSingleton.get_instance()
     doc_file: File = await bot.get_file(message.document.file_id)
     doc_file_bytes: BinaryIO | None = await bot.download_file(doc_file.file_path)
-    content: str = doc_file_bytes.read().decode()
-    document_service = DocumentService()
-    document_service.upload_from_text(content)
+    if doc_file_bytes is None:
+        await message.answer('Ошибка скачивания документа!')
+        return
+    
+    content: str = doc_file_bytes.read().decode('utf-8')
 
+    file_path = f'/app/fixtures/{message.document.file_name}-{message.from_user.id}.txt'
+    with open(file_path, 'w', encoding='utf-8') as doc_file_write:
+        doc_file_write.write(content)
+    # Future:
+    #document_service = DocumentService()
+    #document_service.upload_from_text(content)
+    #if message.caption is not None and message.caption.strip() != "":
+    #    await message.answer('Документ загружен! Бот уже генерирует ответ на ваш вопрос')
+    #    thread_id: int = message.chat.id
+    #    print(f'[BOT]: <{thread_id}> - {message.caption}')
+    #    answer = ask(message.caption, str(thread_id))
+    #    await message.answer(str(answer))
+    #else:
+    #    await message.answer('Документ загружен!')
     await message.answer('Документ загружен!')
