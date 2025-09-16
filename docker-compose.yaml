@@ -35,7 +35,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
-      - ./fixtures:/app/fixtures:ro
+      - ./fixtures:/app/fixtures:rw
 
   chroma:
     image: chromadb/chroma:latest
